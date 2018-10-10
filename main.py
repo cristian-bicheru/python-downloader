@@ -29,23 +29,24 @@ def download(dlurl, filename):
                 file.write(chunk)
                 bytesdl += len(chunk)
                 pct = bytesdl/dlsize*100
-                if pct % 1 <= 0.0000001 and pct != 0:
-                    print(pct)
+                if pct % 1 <= 0.001 and pct != 0:
+                    print(math.floor(pct))
         else:
             return "Failed"
     except:
         print("dl fail, retrying at " + str(pct))
         if dl.status_code == 200:
+            pcode = 0
             while True:
                 try:
-                    if dlsize >= bytesdl:
-                        dl = requests.get(dlurl, {'Range': 'bytes=%d-' % bytesdl}, stream=True, timeout=10)
+                    if dlsize > bytesdl:
+                        dl = requests.get(dlurl, headers={'Range': 'bytes=%d-' % bytesdl}, stream=True, timeout=10)
                         for chunk in dl.iter_content(chunk_size=512):
                             file.write(chunk)
                             bytesdl += len(chunk)
                             pct = bytesdl/dlsize*100
-                            if pct % 1 <= 0.0000001 and pct != 0:
-                                print(pct)
+                            if pct % 1 <= 0.001 and pct != 0:
+                                print(math.floor(pct))
                     else:
                         break
                 except:
